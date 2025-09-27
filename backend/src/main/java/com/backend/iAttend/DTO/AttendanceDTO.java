@@ -8,8 +8,8 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @Builder
 public class AttendanceDTO {
-    private Long studentId; // instead of Student object
-    private Long teacherId; // instead of Teacher object
+    private String studentId; // instead of Student object
+    private String teacherId; // instead of Teacher object
     private String subject;
     private LocalDate date;
     private String status; // "Present" or "Absent"

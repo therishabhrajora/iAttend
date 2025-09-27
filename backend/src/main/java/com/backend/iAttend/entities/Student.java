@@ -11,8 +11,7 @@ import lombok.*;
 @Table(name = "student")
 public class Student {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private String id;
 
     @ManyToOne
     @JoinColumn(name = "college_id", nullable = false)

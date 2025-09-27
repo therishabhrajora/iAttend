@@ -9,10 +9,10 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Repository
-public interface AttendanceRepository extends JpaRepository<Attendance, Long> {
-    List<Attendance> findByStudentId(Long studentId);
-    List<Attendance> findByTeacherId(Long teacherId);
+public interface AttendanceRepository extends JpaRepository<Attendance, String> {
+    List<Attendance> findByStudentId(String studentId);
+    List<Attendance> findByTeacherId(String teacherId);
     List<Attendance> findByDate(LocalDate date);
-    List<Attendance> findByStudentIdAndDate(Long studentId, LocalDate date);
+    List<Attendance> findByStudentIdAndDate(String studentId, LocalDate date);
 }
 

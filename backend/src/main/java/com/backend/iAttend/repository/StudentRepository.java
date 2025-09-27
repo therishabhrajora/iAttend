@@ -8,8 +8,8 @@ import com.backend.iAttend.entities.Student;
 import java.util.List;
 
 @Repository
-public interface StudentRepository extends JpaRepository<Student, Long> {
-    List<Student> findByCollegeId(Long collegeId);
+public interface StudentRepository extends JpaRepository<Student, String> {
+    List<Student> findByCollegeId(String collegeId);
     Student findByRollNumber(String rollNumber);
 }
 
