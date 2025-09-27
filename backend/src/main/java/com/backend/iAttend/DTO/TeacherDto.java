@@ -7,8 +7,8 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 public class TeacherDto {
-    private Long id;
-    private Long collegeId;  // instead of College object
+    private String id;
+    private String collegeId;  // instead of College object
     private String name;
     private String email;
     // password excluded from DTO for security

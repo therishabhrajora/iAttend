@@ -8,8 +8,8 @@ import com.backend.iAttend.entities.Teacher;
 import java.util.List;
 
 @Repository
-public interface TeacherRepository extends JpaRepository<Teacher, Long> {
-    List<Teacher> findByCollegeId(Long collegeId);
+public interface TeacherRepository extends JpaRepository<Teacher, String> {
+    List<Teacher> findByCollegeId(String collegeId);
     Teacher findByEmail(String email);
 }
 
