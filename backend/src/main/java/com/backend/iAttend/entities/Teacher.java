@@ -1,5 +1,7 @@
 package com.backend.iAttend.entities;
 
+import java.util.List;
+
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -20,4 +22,8 @@ public class Teacher {
     private String name;
     private String email;
     private String password;
+
+    @OneToMany(mappedBy = "teacher", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Attendance> attandence;
+
 }

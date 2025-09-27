@@ -1,5 +1,7 @@
 package com.backend.iAttend.entities;
 
+import java.util.List;
+
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -19,6 +21,9 @@ public class Student {
 
     private String name;
     private String rollNumber;
-    private String studentClass;  // renamed because 'class' is a reserved keyword
+    private String studentClass; // renamed because 'class' is a reserved keyword
+
+    @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Attendance> attendances;
 }
 

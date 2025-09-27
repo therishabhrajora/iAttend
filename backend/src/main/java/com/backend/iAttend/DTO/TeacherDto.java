@@ -7,7 +7,7 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 public class TeacherDto {
-    private String id;
+    
     private String collegeId;  // instead of College object
     private String name;
     private String email;

@@ -5,11 +5,11 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ClgDTO {
-    private String id;
+public class CollegeDto {
     private String name;
     private String address;
     private String contact;
     private String email;
+    private String password;
     // password usually not exposed in DTO → excluded for safety
 }
