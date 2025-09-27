@@ -13,8 +13,7 @@ import java.time.LocalDate;
 @Table(name = "attendance")
 public class Attendance {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private String id;
 
     @ManyToOne
     @JoinColumn(name = "student_id", nullable = false)
