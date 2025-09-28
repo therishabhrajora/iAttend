@@ -7,8 +7,10 @@ import com.backend.iAttend.DTO.TeacherDto;
 @Service
 public class TeacherService {
 
-    public TeacherDto addTeacher(TeacherDto teacherdto) {
+    public String addTeacher(TeacherDto teacherdto) {
         String id="TC"+java.util.UUID.randomUUID().toString();
+
+        return "";
         
     }
 
