@@ -1,6 +1,9 @@
 package com.backend.iAttend.services;
 
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
+
 import org.springframework.stereotype.Service;
 
 import com.backend.iAttend.DTO.CollegeDto;
@@ -20,7 +23,7 @@ public class CollegeService {
     }
 
     public CollegeDto addCollege(CollegeDto collegedto) {
-        String id = UUID.randomUUID().toString();
+        String id = "CLG"+UUID.randomUUID().toString();
         College college = College.builder()
                 .id(id)
                 .name(collegedto.getName())
@@ -46,5 +49,20 @@ public class CollegeService {
                 .email(college.getEmail())
                 .build();
     }
+
+    public List<CollegeDto> getAllCollege(CollegeDto collegedto) {
+        List<CollegeDto> colleges= collegeRepository.findAll().stream()
+            .map(college -> CollegeDto.builder()
+                .name(college.getName())
+                .address(college.getAddress())
+                .contact(college.getContact())
+                .email(college.getEmail())
+                .build())
+            .collect(Collectors.toList());
+
+            return colleges;
+    }
+
+    
 
 }

@@ -7,7 +7,10 @@ import com.backend.iAttend.DTO.CollegeDto;
 
 import com.backend.iAttend.services.CollegeService;
 
+import java.util.List;
+
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -29,6 +32,15 @@ public class CollegeController {
        return ResponseEntity.ok(college);
        
     }
+
+    @GetMapping("/all")
+    public ResponseEntity<List<CollegeDto>> getMethodName(@RequestBody CollegeDto collegedto) {
+        List<CollegeDto> colleges=collegeService.getAllCollege(collegedto);
+
+        return ResponseEntity.ok(colleges);
+    }
+
+
     
 
 }

@@ -1,6 +1,8 @@
 package com.backend.iAttend.services;
 
 import java.util.UUID;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -42,6 +44,18 @@ public class StudentServices {
                 .rollNumber(student.getRollNumber())
                 .studentClass(student.getStudentClass())
                 .build();
+    }
+
+    public List<StudentDto> getAllStudents(StudentDto studentDto) {
+        List<StudentDto> students = studentRepository.findAll().stream()
+            .map(student -> StudentDto.builder()
+                .collegeId(student.getCollege().getId())
+                .name(student.getName())
+                .rollNumber(student.getRollNumber())
+                .studentClass(student.getStudentClass())
+                .build())
+            .collect(Collectors.toList());
+        return students;
     }
 
 }

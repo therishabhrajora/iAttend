@@ -6,6 +6,8 @@ import com.backend.iAttend.repository.StudentRepository;
 import com.backend.iAttend.DTO.StudentDto;
 import com.backend.iAttend.services.StudentServices;
 
+import java.util.List;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,9 +25,16 @@ public class StudentController {
     }
 
     @PostMapping("/save")
-    public ResponseEntity<StudentDto> getMethodName(@RequestBody StudentDto StudentDto) {
+    public ResponseEntity<StudentDto> saveStudent(@RequestBody StudentDto StudentDto) {
         StudentDto student = studentServices.saveStudent(StudentDto);
         return ResponseEntity.ok(student);
+    }
+
+    @GetMapping("/all")
+    public ResponseEntity<List<StudentDto>> getAllStudents(@RequestBody StudentDto studentDto){
+        List<StudentDto> students=studentServices.getAllStudents(studentDto);
+
+        return ResponseEntity.ok(students);
     }
 
 }
