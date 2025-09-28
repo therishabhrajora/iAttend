@@ -8,7 +8,7 @@ import com.backend.iAttend.DTO.TeacherDto;
 public class TeacherService {
 
     public String addTeacher(TeacherDto teacherdto) {
-        String id="TC"+java.util.UUID.randomUUID().toString();
+        String teacherid="TC"+java.util.UUID.randomUUID().toString();
 
         return "";
         
