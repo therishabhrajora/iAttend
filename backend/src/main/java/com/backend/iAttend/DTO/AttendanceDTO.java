@@ -2,6 +2,9 @@ package com.backend.iAttend.DTO;
 
 import lombok.*;
 import java.time.LocalDate;
+import java.util.List;
+
+import com.backend.iAttend.entities.Student;
 
 @Data
 @NoArgsConstructor

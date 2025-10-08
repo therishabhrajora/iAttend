@@ -25,7 +25,7 @@ public class CollegeController {
         this.collegeService = collegeService;
     }
 
-    @PostMapping("/addCollege")
+    @PostMapping("/add")
     public ResponseEntity<CollegeDto> postMethodName(@RequestBody CollegeDto collegedto) {
        CollegeDto college=collegeService.addCollege(collegedto);
 
@@ -34,8 +34,8 @@ public class CollegeController {
     }
 
     @GetMapping("/all")
-    public ResponseEntity<List<CollegeDto>> getMethodName(@RequestBody CollegeDto collegedto) {
-        List<CollegeDto> colleges=collegeService.getAllCollege(collegedto);
+    public ResponseEntity<List<CollegeDto>> getMethodName() {
+        List<CollegeDto> colleges=collegeService.getAllCollege();
 
         return ResponseEntity.ok(colleges);
     }

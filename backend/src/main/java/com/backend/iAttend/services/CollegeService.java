@@ -50,19 +50,18 @@ public class CollegeService {
                 .build();
     }
 
-    public List<CollegeDto> getAllCollege(CollegeDto collegedto) {
+    public List<CollegeDto> getAllCollege() {
         List<CollegeDto> colleges= collegeRepository.findAll().stream()
             .map(college -> CollegeDto.builder()
                 .name(college.getName())
                 .address(college.getAddress())
                 .contact(college.getContact())
                 .email(college.getEmail())
+                .password("*****")
                 .build())
             .collect(Collectors.toList());
 
             return colleges;
     }
-
-    
 
 }

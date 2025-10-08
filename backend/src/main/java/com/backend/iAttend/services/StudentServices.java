@@ -4,14 +4,12 @@ import java.util.UUID;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.backend.iAttend.DTO.StudentDto;
 import com.backend.iAttend.entities.College;
 import com.backend.iAttend.entities.Student;
-import com.backend.iAttend.enums.Role;
+
 import com.backend.iAttend.repository.CollegeRepository;
 import com.backend.iAttend.repository.StudentRepository;
 
@@ -36,6 +34,8 @@ public class StudentServices {
         student.setName(studentDto.getName());
         student.setRollNumber(studentDto.getRollNumber());
         student.setStudentClass(studentDto.getStudentClass());
+        student.setEmail(studentDto.getEmail());
+        student.setPassword(studentDto.getPassword());
         studentRepository.save(student);
 
         return StudentDto.builder()
@@ -43,19 +43,23 @@ public class StudentServices {
                 .name(student.getName())
                 .rollNumber(student.getRollNumber())
                 .studentClass(student.getStudentClass())
+                .email(student.getEmail())
+                .password("****")
                 .build();
     }
 
-    public List<StudentDto> getAllStudents(StudentDto studentDto) {
+    public List<StudentDto> getAllStudents() {
         List<StudentDto> students = studentRepository.findAll().stream()
             .map(student -> StudentDto.builder()
                 .collegeId(student.getCollege().getId())
                 .name(student.getName())
                 .rollNumber(student.getRollNumber())
                 .studentClass(student.getStudentClass())
+                .email(student.getEmail())
+                .password("****")
                 .build())
             .collect(Collectors.toList());
         return students;
     }
-
+    
 }

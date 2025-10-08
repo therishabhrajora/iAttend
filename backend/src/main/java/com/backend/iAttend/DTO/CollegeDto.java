@@ -10,6 +10,5 @@ public class CollegeDto {
     private String address;
     private String contact;
     private String email;
-    private String password;
-    // password usually not exposed in DTO → excluded for safety
+    private String password; 
 }

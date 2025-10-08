@@ -24,15 +24,15 @@ public class StudentController {
         this.studentServices = studentServices;
     }
 
-    @PostMapping("/save")
+    @PostMapping("/add")
     public ResponseEntity<StudentDto> saveStudent(@RequestBody StudentDto StudentDto) {
         StudentDto student = studentServices.saveStudent(StudentDto);
         return ResponseEntity.ok(student);
     }
 
     @GetMapping("/all")
-    public ResponseEntity<List<StudentDto>> getAllStudents(@RequestBody StudentDto studentDto){
-        List<StudentDto> students=studentServices.getAllStudents(studentDto);
+    public ResponseEntity<List<StudentDto>> getAllStudents(){
+        List<StudentDto> students=studentServices.getAllStudents();
 
         return ResponseEntity.ok(students);
     }

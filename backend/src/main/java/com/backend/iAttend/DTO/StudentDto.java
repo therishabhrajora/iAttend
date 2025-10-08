@@ -1,7 +1,5 @@
 package com.backend.iAttend.DTO;
 
-import com.backend.iAttend.entities.College;
-
 import lombok.*;
 
 @Data
@@ -13,4 +11,6 @@ public class StudentDto {
     private String name;
     private String rollNumber;
     private String studentClass;
+    private String email;
+    private String password;
 }

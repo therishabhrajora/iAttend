@@ -1,6 +1,9 @@
 package com.backend.iAttend.controller;
 
+import java.util.List;
+
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,5 +25,11 @@ public class TeacherController {
         TeacherDto teacher = teacherService.addTeacher(teacherdto);
 
         return ResponseEntity.ok(teacher);
+    }
+
+    @GetMapping("/all")
+    public ResponseEntity<List<TeacherDto>> getAllTeacher(){
+        List<TeacherDto> teachers=teacherService.getAllTeachers();
+        return ResponseEntity.ok(teachers);
     }
 }

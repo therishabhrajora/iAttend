@@ -11,5 +11,6 @@ import java.util.List;
 public interface StudentRepository extends JpaRepository<Student, String> {
     List<Student> findByCollegeId(String collegeId);
     Student findByRollNumber(String rollNumber);
+   
 }
 

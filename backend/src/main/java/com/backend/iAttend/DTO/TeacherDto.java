@@ -1,5 +1,4 @@
 package com.backend.iAttend.DTO;
-
 import lombok.*;
 
 @Data
@@ -8,8 +7,10 @@ import lombok.*;
 @Builder
 public class TeacherDto {
     
-    private String collegeId;  // instead of College object
+    private String collegeId;  
+    private String teacherId;
     private String name;
     private String email;
-    // password excluded from DTO for security
+    private String password;
+    private String subject;
 }

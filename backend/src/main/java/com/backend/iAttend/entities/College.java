@@ -1,7 +1,8 @@
 package com.backend.iAttend.entities;
 
-
 import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -22,19 +23,15 @@ public class College {
     private String email;
     private String password;
 
-    @OneToOne(mappedBy = "college",cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "college", cascade = CascadeType.ALL)
+    @JsonIgnore
     private Subscriptions subscription;
 
     @OneToMany(mappedBy = "college", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
     private List<Teacher> teachers;
 
     @OneToMany(mappedBy = "college", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
     private List<Student> students;
-
-
-
-    
-
-
 }
-
