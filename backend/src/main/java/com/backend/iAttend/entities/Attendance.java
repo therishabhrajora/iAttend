@@ -28,6 +28,6 @@ public class Attendance {
     private String subject;
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate date;
-    private String status; // "Present" or "Absent"
+    private String status; 
 }
  

@@ -11,10 +11,10 @@ import com.backend.iAttend.entities.Student;
 @AllArgsConstructor
 @Builder
 public class AttendanceDTO {
-    private String studentId; // instead of Student object
-    private String teacherId; // instead of Teacher object
+    private String studentId; 
+    private String teacherId;
     private String subject;
     private LocalDate date;
-    private String status; // "Present" or "Absent"
+    private String status; 
 }
 

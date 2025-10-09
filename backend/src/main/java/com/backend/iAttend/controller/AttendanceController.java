@@ -1,7 +1,9 @@
 package com.backend.iAttend.controller;
 
+import java.util.Date;
 import java.util.List;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,23 +24,37 @@ public class AttendanceController {
 
     private final AttendanceService attendanceService;
 
-    public AttendanceController( AttendanceService attandanceService) {
+    public AttendanceController(AttendanceService attandanceService) {
         this.attendanceService = attandanceService;
     }
 
     @PostMapping("/mark")
-    public String markAttendance(@RequestBody AttendanceDTO attendanceDTO){
-            System.out.println("Received DTO: " + attendanceDTO);
+    public String markAttendance(@RequestBody AttendanceDTO attendanceDTO) {
+        System.out.println("Received DTO: " + attendanceDTO);
         attendanceService.markAttendance(attendanceDTO);
 
         return "Attendance marked successfully.";
     }
 
-    @GetMapping("/view/{subject}")
-    public List<Attendance> viewAttendance(@PathVariable String subject) {
-        System.out.println("Subject: " + subject);
-        List<Attendance> viewAttendance = attendanceService.viewAttendance(subject);
-
-        return viewAttendance;
+    @GetMapping("/attendance/stu/{id}")
+    public ResponseEntity<List<Attendance>> getAttendanceByStudentId(@PathVariable String studentId) {
+        List<Attendance> attendanceByStudentId = attendanceService.getAttendanceByStudentId(studentId);
+        return ResponseEntity.ok().body(attendanceByStudentId);
     }
+
+    @GetMapping("/attendance/teacher/{id}")
+    public List<Attendance> getAttendanceByTeacherId(@PathVariable String teacherId){
+        List<Attendance> attendanceByTeacherId = attendanceService.getAttendanceByTeacherId(teacherId);
+        return attendanceByTeacherId;
+    }
+
+
+    @GetMapping("/attendance/date/{date}")
+     public List<Attendance> getAttendanceByDate(@PathVariable java.time.LocalDate date){
+        List<Attendance> attendanceByDate = attendanceService.getAttendanceByDate(date);
+        return attendanceByDate;
+    }
+
+
+
 }

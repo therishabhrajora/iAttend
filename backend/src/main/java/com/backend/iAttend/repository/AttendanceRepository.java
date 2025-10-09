@@ -1,6 +1,7 @@
 package com.backend.iAttend.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+
 import org.springframework.stereotype.Repository;
 
 import com.backend.iAttend.entities.Attendance;
@@ -15,5 +16,6 @@ public interface AttendanceRepository extends JpaRepository<Attendance, String> 
     List<Attendance> findByDate(LocalDate date);
     List<Attendance> findByStudentIdAndDate(String studentId, LocalDate date);
     List<Attendance> findBySubject(String subject);
+    
 }
 
