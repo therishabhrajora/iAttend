@@ -30,6 +30,8 @@ public class Student {
     private String email;   
     private String password;
 
+    private String role;
+
     @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
     private List<Attendance> attendances;

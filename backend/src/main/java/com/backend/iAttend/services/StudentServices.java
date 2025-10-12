@@ -4,12 +4,13 @@ import java.util.UUID;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.backend.iAttend.DTO.StudentDto;
 import com.backend.iAttend.entities.College;
 import com.backend.iAttend.entities.Student;
-
+import com.backend.iAttend.enums.Role;
 import com.backend.iAttend.repository.CollegeRepository;
 import com.backend.iAttend.repository.StudentRepository;
 
@@ -18,14 +19,17 @@ public class StudentServices {
 
     private final StudentRepository studentRepository;
     private final CollegeRepository collegeRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    StudentServices(StudentRepository studentRepository, CollegeRepository collegeRepository) {
+    StudentServices(StudentRepository studentRepository, CollegeRepository collegeRepository,PasswordEncoder passwordEncoder) {
         this.studentRepository = studentRepository;
         this.collegeRepository = collegeRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public StudentDto saveStudent(StudentDto studentDto) {
         String id = "STU" + UUID.randomUUID().toString();
+       
         College college = collegeRepository.findById(studentDto.getCollegeId())
                 .orElseThrow(() -> new RuntimeException("College not found"));
         Student student = new Student();
@@ -35,7 +39,12 @@ public class StudentServices {
         student.setRollNumber(studentDto.getRollNumber());
         student.setStudentClass(studentDto.getStudentClass());
         student.setEmail(studentDto.getEmail());
-        student.setPassword(studentDto.getPassword());
+        student.setPassword(passwordEncoder.encode(studentDto.getPassword()));
+        student.setRole(Role.STUDENT.name());
+
+
+
+      
         studentRepository.save(student);
 
         return StudentDto.builder()

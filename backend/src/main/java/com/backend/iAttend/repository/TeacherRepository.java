@@ -6,10 +6,11 @@ import org.springframework.stereotype.Repository;
 import com.backend.iAttend.entities.Teacher;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface TeacherRepository extends JpaRepository<Teacher, String> {
     List<Teacher> findByCollegeId(String collegeId);
-    Teacher findByEmail(String email);
+    Optional<Teacher> findByEmail(String email);
 }
 

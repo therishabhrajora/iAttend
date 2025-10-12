@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.backend.iAttend.DTO.CollegeDto;
@@ -16,10 +17,12 @@ import com.backend.iAttend.repository.SubscriptionsRepository;
 public class CollegeService {
     private final CollegeRepository collegeRepository;
     private final SubscriptionsRepository subscriptionsRepository;
+    private PasswordEncoder passwordEncoder;
 
-    CollegeService(CollegeRepository collegeRepository, SubscriptionsRepository subscriptionsRepository) {
+    CollegeService(CollegeRepository collegeRepository, SubscriptionsRepository subscriptionsRepository,PasswordEncoder passwordEncoder) {
         this.subscriptionsRepository = subscriptionsRepository;
         this.collegeRepository = collegeRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public CollegeDto addCollege(CollegeDto collegedto) {
@@ -30,7 +33,7 @@ public class CollegeService {
                 .address(collegedto.getAddress())
                 .contact(collegedto.getContact())
                 .email(collegedto.getEmail())
-                .password(collegedto.getPassword())
+                .password(passwordEncoder.encode(collegedto.getPassword()))
                 .build();
         collegeRepository.save(college);
 

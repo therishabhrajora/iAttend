@@ -26,6 +26,7 @@ public class Teacher {
     private String email;
     private String password;
     private String subject;
+    private String role;
 
     @OneToMany(mappedBy = "teacher", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
