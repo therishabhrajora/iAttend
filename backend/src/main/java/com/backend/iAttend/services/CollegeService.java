@@ -19,14 +19,22 @@ public class CollegeService {
     private final SubscriptionsRepository subscriptionsRepository;
     private PasswordEncoder passwordEncoder;
 
-    CollegeService(CollegeRepository collegeRepository, SubscriptionsRepository subscriptionsRepository,PasswordEncoder passwordEncoder) {
+    CollegeService(CollegeRepository collegeRepository, SubscriptionsRepository subscriptionsRepository,
+            PasswordEncoder passwordEncoder) {
         this.subscriptionsRepository = subscriptionsRepository;
         this.collegeRepository = collegeRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
     public CollegeDto addCollege(CollegeDto collegedto) {
-        String id = "CLG"+UUID.randomUUID().toString();
+        String id = "CLG" + UUID.randomUUID().toString();
+        String role = "";
+        if (collegeRepository.count() == 0) {
+            role = "ADMIN";
+
+        } else {
+            role = "COLLEGE";
+        }
         College college = College.builder()
                 .id(id)
                 .name(collegedto.getName())
@@ -34,6 +42,7 @@ public class CollegeService {
                 .contact(collegedto.getContact())
                 .email(collegedto.getEmail())
                 .password(passwordEncoder.encode(collegedto.getPassword()))
+                .role(role)
                 .build();
         collegeRepository.save(college);
 
@@ -53,18 +62,9 @@ public class CollegeService {
                 .build();
     }
 
-    public List<CollegeDto> getAllCollege() {
-        List<CollegeDto> colleges= collegeRepository.findAll().stream()
-            .map(college -> CollegeDto.builder()
-                .name(college.getName())
-                .address(college.getAddress())
-                .contact(college.getContact())
-                .email(college.getEmail())
-                .password("*****")
-                .build())
-            .collect(Collectors.toList());
-
-            return colleges;
+    public List<College> getAllCollege() {
+        List<College> colleges = collegeRepository.findAll().stream().collect(Collectors.toList());
+        return colleges;
     }
 
 }

@@ -1,6 +1,7 @@
 package com.backend.iAttend.services;
 
 import java.util.UUID;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -67,7 +68,10 @@ public class StudentServices {
                 .email(student.getEmail())
                 .password("****")
                 .build())
+            .sorted(Comparator.comparing(StudentDto::getRollNumber))
             .collect(Collectors.toList());
+    
+
         return students;
     }
     

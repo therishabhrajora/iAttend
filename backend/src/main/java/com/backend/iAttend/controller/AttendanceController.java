@@ -1,6 +1,8 @@
 package com.backend.iAttend.controller;
 
-import java.util.Date;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
@@ -14,8 +16,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.backend.iAttend.DTO.AttendanceDTO;
 import com.backend.iAttend.entities.Attendance;
 import com.backend.iAttend.services.AttendanceService;
-
-
 
 @RestController
 @RequestMapping("/attendance")
@@ -35,25 +35,22 @@ public class AttendanceController {
         return "Attendance marked successfully.";
     }
 
-    @GetMapping("/attendance/stu/{id}")
+    @GetMapping("/stu/{id}")
     public ResponseEntity<List<Attendance>> getAttendanceByStudentId(@PathVariable String studentId) {
         List<Attendance> attendanceByStudentId = attendanceService.getAttendanceByStudentId(studentId);
         return ResponseEntity.ok().body(attendanceByStudentId);
     }
 
-    @GetMapping("/attendance/teacher/{id}")
-    public List<Attendance> getAttendanceByTeacherId(@PathVariable String teacherId){
+    @GetMapping("/teacher/{id}")
+    public List<Attendance> getAttendanceByTeacherId(@PathVariable String teacherId) {
         List<Attendance> attendanceByTeacherId = attendanceService.getAttendanceByTeacherId(teacherId);
         return attendanceByTeacherId;
     }
 
-
-    @GetMapping("/attendance/date/{date}")
-     public List<Attendance> getAttendanceByDate(@PathVariable java.time.LocalDate date){
+    @GetMapping("/{date}")
+    public List<Attendance> getAttendanceByDate(@PathVariable LocalDate date) {    
         List<Attendance> attendanceByDate = attendanceService.getAttendanceByDate(date);
         return attendanceByDate;
     }
-
-
 
 }

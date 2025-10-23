@@ -23,6 +23,7 @@ public class College {
     private String contact;
     private String email;
     private String password;
+    private String role;
 
     @OneToOne(mappedBy = "college", cascade = CascadeType.ALL)
     @JsonIgnore
@@ -36,13 +37,5 @@ public class College {
     @JsonIgnore
     private List<Student> students;
 
-    public College orElseThrow(Object object) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'orElseThrow'");
-    }
-
-    public Optional<College> orElse(Object object) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'orElse'");
-    }
+   
 }

@@ -38,6 +38,8 @@ public class AttendanceService {
         Teacher teacher = teacherRepository.findById(attendanceDTO.getTeacherId())
                 .orElseThrow(() -> new RuntimeException("teacher not found"));
 
+        System.out.println(attendanceDTO);
+
         Attendance attendance = Attendance.builder()
                 .id(id)
                 .student(student)

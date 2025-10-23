@@ -24,11 +24,6 @@ public class StudentController {
         this.studentServices = studentServices;
     }
 
-    @PostMapping("/add")
-    public ResponseEntity<StudentDto> saveStudent(@RequestBody StudentDto StudentDto) {
-        StudentDto student = studentServices.saveStudent(StudentDto);
-        return ResponseEntity.ok(student);
-    }
 
     @GetMapping("/all")
     public ResponseEntity<List<StudentDto>> getAllStudents(){

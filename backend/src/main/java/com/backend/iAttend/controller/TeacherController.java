@@ -20,12 +20,7 @@ public class TeacherController {
         this.teacherService = teacherService;
     }
 
-    @PostMapping("/add")
-    public ResponseEntity<TeacherDto> addTeacher(@RequestBody TeacherDto teacherdto) {
-        TeacherDto teacher = teacherService.addTeacher(teacherdto);
-
-        return ResponseEntity.ok(teacher);
-    }
+ 
 
     @GetMapping("/all")
     public ResponseEntity<List<TeacherDto>> getAllTeacher(){

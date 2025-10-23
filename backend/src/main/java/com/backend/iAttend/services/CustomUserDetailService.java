@@ -16,7 +16,7 @@ import com.backend.iAttend.repository.StudentRepository;
 import com.backend.iAttend.repository.TeacherRepository;
 
 import java.util.List;
-import java.util.Optional;
+
 
 @Service
 public class CustomUserDetailService implements UserDetailsService {
@@ -48,7 +48,7 @@ public class CustomUserDetailService implements UserDetailsService {
         }
 
         // ✅ 2. Check Teacher
-        Teacher teacher = teacherRepository.findByEmail(email).orElse(null);
+        Teacher teacher = teacherRepository.findByEmail(email);
         if (teacher != null) {
             return new org.springframework.security.core.userdetails.User(
                     teacher.getEmail(),
@@ -58,7 +58,7 @@ public class CustomUserDetailService implements UserDetailsService {
         }
 
         // ✅ 3. Check Student
-        Student student = studentRepository.findByEmail(email).orElse(null);
+        Student student = studentRepository.findByEmail(email);
         if (student != null) {
             return new org.springframework.security.core.userdetails.User(
                     student.getEmail(),

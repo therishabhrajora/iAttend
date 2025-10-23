@@ -39,16 +39,24 @@ public class SecurityConfig {
                                 .formLogin(formlogin -> formlogin.disable())
                                 .httpBasic(httpbasic -> httpbasic.disable())
                                 .authorizeHttpRequests(auth -> auth
-                                                .requestMatchers("/api/auth/**").permitAll()
+                                                // .requestMatchers("/**").permitAll()
+                                                .requestMatchers("/api/auth/student/register").permitAll()
+                                                .requestMatchers("/api/auth/student/login").permitAll()
+                                                .requestMatchers("/api/auth/teacher/register").permitAll()
+                                                .requestMatchers("/api/auth/teacher/login").permitAll()
+                                                .requestMatchers("/api/auth/college/**").permitAll()
+                                                // .requestMatchers("/api/auth/**").permitAll()
                                                 .requestMatchers("/college/**").permitAll()
-                                                .requestMatchers("/student/**").permitAll()
-                                                .requestMatchers("/teacher/**").permitAll()
                                                 .requestMatchers("/logout").permitAll()
                                                 .requestMatchers(
                                                                 "/v3/api-docs/**",
                                                                 "/swagger-ui/**",
                                                                 "/swagger-ui.html")
                                                 .permitAll()
+                                                .requestMatchers("/dashboard").authenticated()
+                                                .requestMatchers("/student/all").authenticated()
+                                                .requestMatchers("/teacher/all").authenticated()
+                                                .requestMatchers("/college/all").authenticated()
                                                 .requestMatchers("/attendance/**").authenticated()
 
                                                 .anyRequest().authenticated())
