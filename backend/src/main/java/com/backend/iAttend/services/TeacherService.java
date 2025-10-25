@@ -1,5 +1,6 @@
 package com.backend.iAttend.services;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -68,6 +69,7 @@ public class TeacherService {
             .teacherId(college.getTeacherId())
             .subject(college.getSubject())
             .build())
+        .sorted(Comparator.comparing(TeacherDto::getTeacherId))
         .collect(Collectors.toList());
 
         return teachers;

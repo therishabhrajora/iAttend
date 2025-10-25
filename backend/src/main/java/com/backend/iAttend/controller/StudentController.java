@@ -3,15 +3,13 @@ package com.backend.iAttend.controller;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.backend.iAttend.repository.StudentRepository;
-import com.backend.iAttend.DTO.StudentDto;
+import com.backend.iAttend.entities.Student;
 import com.backend.iAttend.services.StudentServices;
 
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @RestController
@@ -26,8 +24,8 @@ public class StudentController {
 
 
     @GetMapping("/all")
-    public ResponseEntity<List<StudentDto>> getAllStudents(){
-        List<StudentDto> students=studentServices.getAllStudents();
+    public ResponseEntity<List<Student>> getAllStudents(){
+        List<Student> students=studentServices.getAllStudents();
 
         return ResponseEntity.ok(students);
     }

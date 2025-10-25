@@ -1,23 +1,34 @@
 package com.backend.iAttend.controller;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.ResponseEntity.BodyBuilder;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.backend.iAttend.DTO.CollegeDto;
+import com.backend.iAttend.DTO.OtpRequest;
 import com.backend.iAttend.DTO.StudentDto;
 import com.backend.iAttend.DTO.TeacherDto;
 import com.backend.iAttend.Requests.CollegeLoginRequest;
 import com.backend.iAttend.Requests.StudentLoginRequest;
 import com.backend.iAttend.Requests.TeacherLoginRequest;
+import com.backend.iAttend.entities.Teacher;
 import com.backend.iAttend.services.CollegeService;
+import com.backend.iAttend.services.EmailService;
 import com.backend.iAttend.services.LoginService;
 import com.backend.iAttend.services.StudentServices;
 import com.backend.iAttend.services.TeacherService;
+
+import jakarta.validation.constraints.Email;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -26,13 +37,15 @@ public class AuthController {
     private final StudentServices studentServices;
     private final TeacherService teacherService;
     private final CollegeService collegeService;
+    private final EmailService emailService;
 
     public AuthController(LoginService loginService, CollegeService collegeService, StudentServices studentServices,
-            TeacherService teacherService) {
+            TeacherService teacherService, EmailService emailService) {
         this.loginService = loginService;
         this.studentServices = studentServices;
         this.teacherService = teacherService;
         this.collegeService = collegeService;
+        this.emailService = emailService;
     }
 
     @PostMapping("/student/login")
@@ -50,7 +63,7 @@ public class AuthController {
 
     @PostMapping("/college/login")
     public ResponseEntity<?> collegeLogin(@RequestBody CollegeLoginRequest request) {
-        System.out.println(request);
+        // System.out.println(request);
         return loginService.collegeLogin(request);
 
     }
@@ -64,7 +77,6 @@ public class AuthController {
 
     @PostMapping("/student/register")
     public ResponseEntity<StudentDto> saveStudent(@RequestBody StudentDto studentDto) {
-        System.out.println("========================" + studentDto);
         StudentDto student = studentServices.saveStudent(studentDto);
         return ResponseEntity.ok(student);
     }
@@ -75,4 +87,15 @@ public class AuthController {
 
         return ResponseEntity.ok(teacher);
     }
+
+    @PostMapping("/verify-otp")
+    public ResponseEntity<?> verifyOtp(@RequestBody OtpRequest otpRequest) {
+        String email = otpRequest.getEmail();
+        String otp = otpRequest.getOtp();
+
+        ResponseEntity<?> verifyOtpProcess = loginService.verifyOtpProcess(email, otp);
+        return verifyOtpProcess;
+
+    }
+
 }

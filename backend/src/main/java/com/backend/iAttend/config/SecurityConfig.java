@@ -44,8 +44,9 @@ public class SecurityConfig {
                                                 .requestMatchers("/api/auth/student/login").permitAll()
                                                 .requestMatchers("/api/auth/teacher/register").permitAll()
                                                 .requestMatchers("/api/auth/teacher/login").permitAll()
+                                                .requestMatchers("/api/auth/verify-otp").permitAll()
                                                 .requestMatchers("/api/auth/college/**").permitAll()
-                                                // .requestMatchers("/api/auth/**").permitAll()
+                                            
                                                 .requestMatchers("/college/**").permitAll()
                                                 .requestMatchers("/logout").permitAll()
                                                 .requestMatchers(
@@ -58,10 +59,12 @@ public class SecurityConfig {
                                                 .requestMatchers("/teacher/all").authenticated()
                                                 .requestMatchers("/college/all").authenticated()
                                                 .requestMatchers("/attendance/**").authenticated()
-
+                                              
                                                 .anyRequest().authenticated())
                                 .sessionManagement(session -> session
-                                                .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                                                .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // <-- Rule 1
+                                                .invalidSessionUrl("/login?invalidSession=true") // <-- Rule 2
+                                )
 
                                 .authenticationProvider(authenticationProvider())
                                 .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)
@@ -74,6 +77,7 @@ public class SecurityConfig {
                                                         "http://localhost:5173"));
                                         config.addAllowedHeader("*");
                                         config.addAllowedMethod("*");
+
                                         return config;
                                 }))
                                 .exceptionHandling(ex -> ex
@@ -86,9 +90,7 @@ public class SecurityConfig {
                                                 .logoutSuccessUrl("//api/auth/college/login?logout=true")
                                                 .invalidateHttpSession(true)
                                                 .deleteCookies("JSESSIONID")
-                                                .permitAll())
-                                .sessionManagement(session -> session
-                                                .invalidSessionUrl("/login?invalidSession=true"));
+                                                .permitAll());
 
                 return http.build();
         }

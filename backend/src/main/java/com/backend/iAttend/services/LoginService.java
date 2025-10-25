@@ -1,6 +1,7 @@
 package com.backend.iAttend.services;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -9,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -34,27 +36,29 @@ public class LoginService {
     private final CollegeRepository collegeRepository;
     private final StudentRepository studentRepository;
     private final TeacherRepository teacherRepository;
+    private final EmailService emailService;
 
     Logger logger = LoggerFactory.getLogger(LoginService.class);
 
     public LoginService(AuthenticationManager authenticationManager, JwtUtil jwtUtil,
             CustomUserDetailService userDetailService, CollegeRepository collegeRepository,
-            StudentRepository studentRepository, TeacherRepository teacherRepository) {
+            StudentRepository studentRepository, TeacherRepository teacherRepository, EmailService emailService) {
         this.authenticationManager = authenticationManager;
         this.jwtUtil = jwtUtil;
         this.userDetailService = userDetailService;
         this.collegeRepository = collegeRepository;
         this.studentRepository = studentRepository;
         this.teacherRepository = teacherRepository;
+        this.emailService = emailService;
     }
 
     public ResponseEntity<?> studentLogin(StudentLoginRequest request) {
         try {
 
-            System.out.println(request);
+            // System.out.println(request);
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
-            System.out.println("✅ Authentication Success: " + authentication);
+            // System.out.println("✅ Authentication Success: " + authentication);
 
             SecurityContextHolder.getContext().setAuthentication(authentication);
             UserDetails userDetails = (UserDetails) authentication.getPrincipal();
@@ -89,46 +93,69 @@ public class LoginService {
         }
     }
 
+    // public ResponseEntity<?> teacherLogin(TeacherLoginRequest request) {
+    //     try {
+
+    //         System.out.println(request);
+    //         Authentication authentication = authenticationManager.authenticate(
+    //                 new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
+    //         // System.out.println("✅ Authentication Success: " + authentication);
+
+    //         SecurityContextHolder.getContext().setAuthentication(authentication);
+    //         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+    //         // System.out.println("✅ UserDetails: " + userDetails);
+
+    //         String token = jwtUtil.generateToken(userDetails);
+    //         // System.out.println(token);
+    //         Teacher teacher = teacherRepository.findByEmail(userDetails.getUsername());
+    //         String role = userDetails.getAuthorities().iterator().next().getAuthority();
+
+    //         // System.out.println("college: "+college.getEmail());
+    //         ObjectMapper objectMapper = new ObjectMapper();
+    //         emailService.sendOtpToUser(request.getEmail());
+
+    //         Map<String, Object> response = new HashMap<>();
+    //         response.put("token", token);
+    //         response.put("role", role);
+    //         response.put("user", objectMapper.convertValue(teacher, Map.class));
+    //         System.out.println(response);
+    //         return ResponseEntity.ok(response);
+
+    //     } catch (Exception e) {
+    //         Map<String, String> errorResponse = Map.of("error", "authenticaion fail");
+    //         return ResponseEntity.status(401).body(errorResponse);
+    //     }
+
+    // }
+
     public ResponseEntity<?> teacherLogin(TeacherLoginRequest request) {
-        try {
+    try {
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
 
-            System.out.println(request);
-            Authentication authentication = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
-            System.out.println("✅ Authentication Success: " + authentication);
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        Teacher teacher = teacherRepository.findByEmail(request.getEmail());
 
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-            // System.out.println("✅ UserDetails: " + userDetails);
+        // Send OTP to user email
+        emailService.sendOtpToUser(request.getEmail());
 
-            String token = jwtUtil.generateToken(userDetails);
-            // System.out.println(token);
-            Teacher teacher = teacherRepository.findByEmail(userDetails.getUsername());
-            String role = userDetails.getAuthorities().iterator().next().getAuthority();
+        Map<String, Object> response = new HashMap<>();
+        response.put("message", "OTP sent to your email.");
+        return ResponseEntity.ok(response);
 
-            // System.out.println("college: "+college.getEmail());
-            ObjectMapper objectMapper = new ObjectMapper();
-
-            Map<String, Object> response = new HashMap<>();
-            response.put("token", token);
-            response.put("role", role);
-            response.put("user", objectMapper.convertValue(teacher, Map.class));
-            System.out.println(response);
-            return ResponseEntity.ok(response);
-
-        } catch (Exception e) {
-            Map<String, String> errorResponse = Map.of("error", "authenticaion fail");
-            return ResponseEntity.status(401).body(errorResponse);
-        }
-
+    } catch (Exception e) {
+        Map<String, String> errorResponse = Map.of("error", "Authentication failed");
+        return ResponseEntity.status(401).body(errorResponse);
     }
+}
+
 
     public ResponseEntity<?> collegeLogin(CollegeLoginRequest request) {
         try {
-            System.out.println(request);
+            // System.out.println(request);
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
-            System.out.println("✅ Authentication Success: " + authentication);
+            // System.out.println("✅ Authentication Success: " + authentication);
             SecurityContextHolder.getContext().setAuthentication(authentication);
             UserDetails userDetails = (UserDetails) authentication.getPrincipal();
             // System.out.println("✅ UserDetails: " + userDetails);
@@ -148,5 +175,25 @@ public class LoginService {
             return ResponseEntity.status(401).body(errorResponse);
         }
     }
+
+   public ResponseEntity<?> verifyOtpProcess(String email, String otp) {
+    ResponseEntity<String> otpCheck = emailService.verifyOtp(email, otp);
+
+    if (otpCheck.getStatusCode().is2xxSuccessful()) {
+        Teacher teacher = teacherRepository.findByEmail(email);
+        UserDetails userDetails = new org.springframework.security.core.userdetails.User(
+                teacher.getEmail(), teacher.getPassword(), List.of(new SimpleGrantedAuthority("TEACHER")));
+        String token = jwtUtil.generateToken(userDetails);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("token", token);
+        response.put("user", teacher);
+        response.put("role", "TEACHER");
+        return ResponseEntity.ok(response);
+    } else {
+        return ResponseEntity.status(400).body("Invalid or expired OTP");
+    }
+}
+
 
 }

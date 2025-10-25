@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -27,28 +28,29 @@ public class AttendanceController {
         this.attendanceService = attandanceService;
     }
 
-    @PostMapping("/mark")
-    public String markAttendance(@RequestBody AttendanceDTO attendanceDTO) {
-        System.out.println("Received DTO: " + attendanceDTO);
-        attendanceService.markAttendance(attendanceDTO);
+    @PutMapping("/mark")
+    public ResponseEntity<String> markAttendance(@RequestBody List<AttendanceDTO> attendanceDTOList) {
+        attendanceService.markAttendance(attendanceDTOList);
+        return ResponseEntity.ok("Attendance marked successfully");
 
-        return "Attendance marked successfully.";
     }
 
-    @GetMapping("/stu/{id}")
+    @GetMapping("/stu/{studentId}")
     public ResponseEntity<List<Attendance>> getAttendanceByStudentId(@PathVariable String studentId) {
+       //System.out.println("Fetching attendance for student ID: " + studentId);
         List<Attendance> attendanceByStudentId = attendanceService.getAttendanceByStudentId(studentId);
         return ResponseEntity.ok().body(attendanceByStudentId);
     }
 
-    @GetMapping("/teacher/{id}")
+    @GetMapping("/teacher/{teacherId}")
     public List<Attendance> getAttendanceByTeacherId(@PathVariable String teacherId) {
+
         List<Attendance> attendanceByTeacherId = attendanceService.getAttendanceByTeacherId(teacherId);
         return attendanceByTeacherId;
     }
 
     @GetMapping("/{date}")
-    public List<Attendance> getAttendanceByDate(@PathVariable LocalDate date) {    
+    public List<Attendance> getAttendanceByDate(@PathVariable LocalDate date) {
         List<Attendance> attendanceByDate = attendanceService.getAttendanceByDate(date);
         return attendanceByDate;
     }
