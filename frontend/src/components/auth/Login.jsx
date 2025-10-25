@@ -15,8 +15,8 @@ import { loginUser, verifyOtp } from "../../features/auth/AuthSlice"; // make su
 const API_BASE_URL = "http://localhost:8080/auth";
 
 const Login = () => {
-  const [email, setEmail] = useState("rishabhrajora20@gmail.com");
-  const [password, setPassword] = useState("Rishabh@123");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [role, setRole] = useState("TEACHER");
   const [otp, setOtp] = useState("");
   const [step, setStep] = useState(1);
