@@ -91,6 +91,8 @@ export default function UnifiedRegistrationForm() {
       .catch(() => setColleges([]));
   }, [dispatch]);
 
+  // console.log("colleges", colleges);
+
   // Reset role-specific fields
   useEffect(() => {
     setFormData((prev) => ({

@@ -64,7 +64,7 @@ export const fetchColleges = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const response = await api.get(`/college/all`);
-      // console.log(response);
+      // console.log("response from colg",response);
       return response;
     } catch (error) {
       return rejectWithValue(
