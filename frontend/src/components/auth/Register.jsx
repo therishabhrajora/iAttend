@@ -126,27 +126,34 @@ export default function UnifiedRegistrationForm() {
         if (value.length < 6) return "Password must be at least 6 characters";
         break;
       case "rollNumber":
-        if (selectedRole === ROLES.STUDENT && !value) return "Roll number is required";
+        if (selectedRole === ROLES.STUDENT && !value)
+          return "Roll number is required";
         break;
       case "studentClass":
-        if (selectedRole === ROLES.STUDENT && !value) return "Class is required";
+        if (selectedRole === ROLES.STUDENT && !value)
+          return "Class is required";
         break;
       case "teacherId":
-        if (selectedRole === ROLES.TEACHER && !value) return "Teacher ID is required";
+        if (selectedRole === ROLES.TEACHER && !value)
+          return "Teacher ID is required";
         break;
       case "subject":
-        if (selectedRole === ROLES.TEACHER && !value) return "Subject is required";
+        if (selectedRole === ROLES.TEACHER && !value)
+          return "Subject is required";
         break;
       case "address":
-        if (selectedRole === ROLES.COLLEGE && !value) return "Address is required";
+        if (selectedRole === ROLES.COLLEGE && !value)
+          return "Address is required";
         break;
       case "contact":
-        if (selectedRole === ROLES.COLLEGE && !value) return "Contact number is required";
+        if (selectedRole === ROLES.COLLEGE && !value)
+          return "Contact number is required";
         const phoneRegex = /^[0-9]{10}$/;
         if (!phoneRegex.test(value)) return "Invalid phone number";
         break;
       case "collegeId":
-        if (selectedRole !== ROLES.COLLEGE && !value) return "Please select a college";
+        if (selectedRole !== ROLES.COLLEGE && !value)
+          return "Please select a college";
         break;
       default:
         return "";
@@ -162,16 +169,39 @@ export default function UnifiedRegistrationForm() {
 
   const validateAllFields = () => {
     const newErrors = {};
-    Object.keys(formData).forEach((field) => {
+
+    // Always required fields
+    ["name", "email", "password"].forEach((field) => {
       const error = validateField(field, formData[field]);
       if (error) newErrors[field] = error;
     });
+
+    if (selectedRole === ROLES.STUDENT) {
+      ["collegeId", "rollNumber", "studentClass"].forEach((field) => {
+        const error = validateField(field, formData[field]);
+        if (error) newErrors[field] = error;
+      });
+    } else if (selectedRole === ROLES.TEACHER) {
+      ["collegeId", "teacherId", "subject"].forEach((field) => {
+        const error = validateField(field, formData[field]);
+        if (error) newErrors[field] = error;
+      });
+    } else if (selectedRole === ROLES.COLLEGE) {
+      ["address", "contact"].forEach((field) => {
+        const error = validateField(field, formData[field]);
+        if (error) newErrors[field] = error;
+      });
+    }
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    console.log("Selected Role:", selectedRole);
+    console.log("valid", validateAllFields());
+    console.log("Form Data:", formData);
     if (!validateAllFields()) return;
 
     let payload = {};
@@ -256,7 +286,10 @@ export default function UnifiedRegistrationForm() {
         <form onSubmit={handleSubmit} className="space-y-5">
           {selectedRole !== ROLES.COLLEGE && (
             <div>
-              <label htmlFor="college-select" className="block text-sm font-medium text-slate-700 mb-1">
+              <label
+                htmlFor="college-select"
+                className="block text-sm font-medium text-slate-700 mb-1"
+              >
                 Select College
               </label>
               <div className="relative">
@@ -267,7 +300,9 @@ export default function UnifiedRegistrationForm() {
                   value={formData.collegeId}
                   onChange={handleChange}
                   className={`w-full pl-10 pr-4 py-3 border rounded-lg bg-slate-50 appearance-none focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all ${
-                    errors.collegeId ? "border-red-500 focus:ring-red-500" : "border-slate-300"
+                    errors.collegeId
+                      ? "border-red-500 focus:ring-red-500"
+                      : "border-slate-300"
                   }`}
                   required
                 >
@@ -277,40 +312,120 @@ export default function UnifiedRegistrationForm() {
                   {colleges.length === 0 ? (
                     <option disabled>Loading colleges...</option>
                   ) : (
-                    colleges.map((clg) => <option key={clg.id} value={clg.id}>{clg.name}</option>)
+                    colleges.map((clg) => (
+                      <option key={clg.id} value={clg.id}>
+                        {clg.name}
+                      </option>
+                    ))
                   )}
                 </select>
                 <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 pointer-events-none" />
-                {errors.collegeId && <p className="text-red-500 text-xs mt-1">{errors.collegeId}</p>}
+                {errors.collegeId && (
+                  <p className="text-red-500 text-xs mt-1">
+                    {errors.collegeId}
+                  </p>
+                )}
               </div>
             </div>
           )}
 
-          <InputField icon={User} name="name" type="text" placeholder="Full Name" value={formData.name} onChange={handleChange} error={errors.name} />
+          <InputField
+            icon={User}
+            name="name"
+            type="text"
+            placeholder="Full Name"
+            value={formData.name}
+            onChange={handleChange}
+            error={errors.name}
+          />
 
           {selectedRole === ROLES.STUDENT && (
             <>
-              <InputField icon={Hash} name="rollNumber" type="text" placeholder="Roll Number" value={formData.rollNumber} onChange={handleChange} error={errors.rollNumber} />
-              <InputField icon={GraduationCap} name="studentClass" type="text" placeholder="Class (e.g., B.Tech CSE)" value={formData.studentClass} onChange={handleChange} error={errors.studentClass} />
+              <InputField
+                icon={Hash}
+                name="rollNumber"
+                type="text"
+                placeholder="Roll Number"
+                value={formData.rollNumber}
+                onChange={handleChange}
+                error={errors.rollNumber}
+              />
+              <InputField
+                icon={GraduationCap}
+                name="studentClass"
+                type="text"
+                placeholder="Class (e.g., B.Tech CSE)"
+                value={formData.studentClass}
+                onChange={handleChange}
+                error={errors.studentClass}
+              />
             </>
           )}
 
           {selectedRole === ROLES.TEACHER && (
             <>
-              <InputField icon={IdCard} name="teacherId" type="text" placeholder="Teacher ID" value={formData.teacherId} onChange={handleChange} error={errors.teacherId} />
-              <InputField icon={BookOpen} name="subject" type="text" placeholder="Subject Taught" value={formData.subject} onChange={handleChange} error={errors.subject} />
+              <InputField
+                icon={IdCard}
+                name="teacherId"
+                type="text"
+                placeholder="Teacher ID"
+                value={formData.teacherId}
+                onChange={handleChange}
+                error={errors.teacherId}
+              />
+              <InputField
+                icon={BookOpen}
+                name="subject"
+                type="text"
+                placeholder="Subject Taught"
+                value={formData.subject}
+                onChange={handleChange}
+                error={errors.subject}
+              />
             </>
           )}
 
           {selectedRole === ROLES.COLLEGE && (
             <>
-              <InputField icon={MapPin} name="address" type="text" placeholder="College Address" value={formData.address} onChange={handleChange} error={errors.address} />
-              <InputField icon={Phone} name="contact" type="tel" placeholder="Contact Number" value={formData.contact} onChange={handleChange} error={errors.contact} />
+              <InputField
+                icon={MapPin}
+                name="address"
+                type="text"
+                placeholder="College Address"
+                value={formData.address}
+                onChange={handleChange}
+                error={errors.address}
+              />
+              <InputField
+                icon={Phone}
+                name="contact"
+                type="tel"
+                placeholder="Contact Number"
+                value={formData.contact}
+                onChange={handleChange}
+                error={errors.contact}
+              />
             </>
           )}
 
-          <InputField icon={Mail} name="email" type="email" placeholder="Email Address" value={formData.email} onChange={handleChange} error={errors.email} />
-          <InputField icon={Lock} name="password" type="password" placeholder="Password" value={formData.password} onChange={handleChange} error={errors.password} />
+          <InputField
+            icon={Mail}
+            name="email"
+            type="email"
+            placeholder="Email Address"
+            value={formData.email}
+            onChange={handleChange}
+            error={errors.email}
+          />
+          <InputField
+            icon={Lock}
+            name="password"
+            type="password"
+            placeholder="Password"
+            value={formData.password}
+            onChange={handleChange}
+            error={errors.password}
+          />
 
           <button
             type="submit"
@@ -322,7 +437,10 @@ export default function UnifiedRegistrationForm() {
 
         <p className="text-center text-sm text-slate-600">
           Already have an account?{" "}
-          <a href="/login" className="text-purple-600 hover:text-purple-700 font-medium transition-colors">
+          <a
+            href="/login"
+            className="text-purple-600 hover:text-purple-700 font-medium transition-colors"
+          >
             Log in
           </a>
         </p>
