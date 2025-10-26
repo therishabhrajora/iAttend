@@ -89,7 +89,7 @@ const api = {
         const response = await axios.get(`${API_BASE_URL}${url}`);
         return response.data;
       } catch (error) {
-        // console.error("Dashboard API error:", error);
+        console.error("Dashboard API error:", error);
       }
     }
 
