@@ -136,6 +136,8 @@ public class LoginService {
         SecurityContextHolder.getContext().setAuthentication(authentication);
         Teacher teacher = teacherRepository.findByEmail(request.getEmail());
 
+        logger.info("✅ Authentication Success for teacher: " + teacher.getEmail());
+
         // Send OTP to user email
         emailService.sendOtpToUser(request.getEmail());
 
