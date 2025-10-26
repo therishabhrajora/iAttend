@@ -58,7 +58,7 @@ const Login = () => {
     const result = await dispatch(loginUser({ email, password, role }));
     
     if (result.meta.requestStatus === "fulfilled") {
-      setMessage("OTP sent! Check your email.");
+      setMessage("OTP sent! Check your email (check spam folder).");
       setStep(2); // move to OTP step
     } else {
       setMessage(result.payload || "Login failed");
