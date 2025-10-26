@@ -143,6 +143,7 @@ public class LoginService {
 
         Map<String, Object> response = new HashMap<>();
         response.put("message", "OTP sent to your email.");
+        logger.info("OTP sent to email: {}", request.getEmail());
         return ResponseEntity.ok(response);
 
     } catch (Exception e) {
