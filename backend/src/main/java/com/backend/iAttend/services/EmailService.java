@@ -31,9 +31,8 @@ public class EmailService {
         message.setTo(to);
         message.setSubject(subject);
         message.setText(body);
-        logger.info("message is printing",message.toString());
+        logger.info("message is printing {}", message.toString());
         javaMailSender.send(message);
-
     }
 
     public String generateOtp() {
@@ -42,13 +41,20 @@ public class EmailService {
     }
 
     public void sendOtpToUser(String email) {
-        String otp = generateOtp();
-        otpStorage.put(email, otp);
-        logger.info("Generated OTP for {}: {}", email, otp);
-        String subject = "Your Login Verification OTP";
-        String body = "Your OTP for login is: " + otp + "\nThis code is valid for 5 minutes.";
 
-        sendMail(email, subject, body);
+        try {
+            String otp = generateOtp();
+            otpStorage.put(email, otp);
+            logger.info("Generated OTP for {}: {}", email, otp);
+            String subject = "Your Login Verification OTP";
+            String body = "Your OTP for login is: " + otp + "\nThis code is valid for 5 minutes.";
+
+            sendMail(email, subject, body);
+            logger.info("OTP sent to email: {}", email);
+        } catch (Exception e) {
+            logger.error("Failed to send OTP to {}: {}", email, e.getMessage(), e);
+        }
+
     }
 
     public ResponseEntity<String> verifyOtp(String email, String otp) {
