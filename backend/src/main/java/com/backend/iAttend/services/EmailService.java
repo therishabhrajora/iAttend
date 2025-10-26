@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -19,6 +21,8 @@ public class EmailService {
         this.javaMailSender = javaMailSender;
     }
 
+    Logger logger = LoggerFactory.getLogger(EmailService.class);
+
     private Map<String, String> otpStorage = new HashMap<>();
 
     public void sendMail(String to, String subject, String body) {
@@ -30,8 +34,6 @@ public class EmailService {
 
         javaMailSender.send(message);
 
-      
-
     }
 
     public String generateOtp() {
@@ -41,7 +43,8 @@ public class EmailService {
 
     public void sendOtpToUser(String email) {
         String otp = generateOtp();
-        otpStorage.put(email, otp); // store OTP
+        otpStorage.put(email, otp);
+        logger.info("Generated OTP for {}: {}", email, otp);
         String subject = "Your Login Verification OTP";
         String body = "Your OTP for login is: " + otp + "\nThis code is valid for 5 minutes.";
 
@@ -51,7 +54,7 @@ public class EmailService {
     public ResponseEntity<String> verifyOtp(String email, String otp) {
         String storedOtp = otpStorage.get(email);
 
-        System.out.println( "Stored OTP: " + storedOtp + ", Provided OTP: " + otp);
+        System.out.println("Stored OTP: " + storedOtp + ", Provided OTP: " + otp);
 
         if (storedOtp != null && storedOtp.equals(otp)) {
             otpStorage.remove(email);
@@ -60,6 +63,5 @@ public class EmailService {
             return ResponseEntity.badRequest().body("Invalid or expired OTP!");
         }
     }
-
 
 }
