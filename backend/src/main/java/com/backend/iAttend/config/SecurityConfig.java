@@ -1,5 +1,6 @@
 package com.backend.iAttend.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -28,9 +29,11 @@ public class SecurityConfig {
         private CustomUserDetailService userDetailService;
 
         public SecurityConfig(JwtRequestFilter jwtRequestFilter, CustomUserDetailService userDetailService) {
+        
                 this.jwtRequestFilter = jwtRequestFilter;
                 this.userDetailService = userDetailService;
         }
+      
 
         @Bean
         public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -73,7 +76,7 @@ public class SecurityConfig {
                                         CorsConfiguration config = new CorsConfiguration();
                                         config.setAllowCredentials(true);
                                         config.setAllowedOrigins(List.of(
-                                                        "https://ramyascrubs.netlify.app",
+                                                        "https://iattendapp.netlify.app",
                                                         "http://localhost:5173"));
                                         config.addAllowedHeader("*");
                                         config.addAllowedMethod("*");
