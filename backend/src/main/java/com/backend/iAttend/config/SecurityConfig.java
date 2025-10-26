@@ -43,6 +43,7 @@ public class SecurityConfig {
                                 .httpBasic(httpbasic -> httpbasic.disable())
                                 .authorizeHttpRequests(auth -> auth
                                                 // .requestMatchers("/**").permitAll()
+                                                .requestMatchers("/api/health").permitAll()
                                                 .requestMatchers("/api/auth/student/register").permitAll()
                                                 .requestMatchers("/api/auth/student/login").permitAll()
                                                 .requestMatchers("/api/auth/teacher/register").permitAll()
