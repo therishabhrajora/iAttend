@@ -56,6 +56,7 @@ const Login = () => {
     setLocalLoading(true);
 
     const result = await dispatch(loginUser({ email, password, role }));
+    
     if (result.meta.requestStatus === "fulfilled") {
       setMessage("OTP sent! Check your email.");
       setStep(2); // move to OTP step

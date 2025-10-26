@@ -29,6 +29,7 @@ export const loginUser = createAsyncThunk(
         { email, password, roleLower },
         roleLower
       );
+      console.log("✅ Login Response:", response);
      
 
       return { message: response.data.message || "OTP sent" };
