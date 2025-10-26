@@ -11,7 +11,7 @@ public class ServerPingScheduler {
     private final RestTemplate restTemplate = new RestTemplate();
     private final String healthUrl = "https://iattend-yvjs.onrender.com/api/health";
 
-    @Scheduled(fixedRate = 14 * 60 * 1000) // 14 minutes in milliseconds
+    @Scheduled(fixedRate = 1 * 60 * 1000) // 14 minutes in milliseconds
     public void pingServer() {
         try {
             String response = restTemplate.getForObject(healthUrl, String.class);
