@@ -265,8 +265,8 @@ export default function UnifiedRegistrationForm() {
         {/* Role Selection */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
           {[
-            { key: ROLES.STUDENT, icon: GraduationCap, label: "Student" },
             { key: ROLES.TEACHER, icon: Briefcase, label: "Teacher" },
+            { key: ROLES.STUDENT, icon: GraduationCap, label: "Student" },
             { key: ROLES.COLLEGE, icon: Building2, label: "College" },
           ].map(({ key, icon: Icon, label }) => (
             <button

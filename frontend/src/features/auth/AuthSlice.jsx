@@ -1,9 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-
 import api from "../../api/apis";
-
-// 🔐 Retrieve token if available
-const token = localStorage.getItem("token");
 
 // 🌟 Initial state
 const authInitialState = {
@@ -21,22 +17,32 @@ export const loginUser = createAsyncThunk(
   "auth/loginUser",
   async ({ email, password, role }, { rejectWithValue }) => {
     try {
-      console.log("in try");
+      console.log("Processing direct credential login...");
       const roleLower = role.toLowerCase();
       const endpoint = `/api/auth/${roleLower}/login`;
+
       const response = await api.post(
         endpoint,
         { email, password, roleLower },
         roleLower
       );
-      console.log("✅ Login Response:", response);
-     
 
-      return { message: response.data.message || "OTP sent" };
+      console.log("✅ Login Response Data:", response.data);
+      
+      // Extract properties directly from your backend's json response object
+      const { token, user, role: userRole } = response.data;
+      
+      localStorage.setItem("token", token);
+      localStorage.setItem("user", JSON.stringify(user));
+      localStorage.setItem("role", userRole);
+
+      // Return the direct authentication payload (token, role, user details)
+      return response;
+
     } catch (error) {
-      console.log("❌ Login Catch:", error);
+      console.log("❌ Login Catch Error:", error);
       return rejectWithValue(
-        error.response?.data?.message || error.message || "Login failed."
+        error.response?.data?.error || error.response?.data?.message || error.message || "Login failed."
       );
     }
   }
@@ -48,11 +54,9 @@ export const registerUser = createAsyncThunk(
   async ({ role, endpoint, data }, { rejectWithValue }) => {
     try {
       const finalEndpoint = `/api/auth${endpoint}`;
-
       const response = await api.post(finalEndpoint, data, role);
       return response;
     } catch (error) {
-      // console.log("❌ Register Catch:", error);
       return rejectWithValue(error.response?.data || "Registration failed");
     }
   }
@@ -66,28 +70,6 @@ export const fetchCurrentUser = createAsyncThunk(
       return response.data;
     } catch (error) {
       return rejectWithValue("Failed to fetch user info");
-    }
-  }
-);
-
-export const verifyOtp = createAsyncThunk(
-  "auth/verifyOtp",
-  async ({ email, otp, role }, { rejectWithValue }) => {
-    try {
-      console.log("Verifying OTP for:", email, role);
-      const res = await api.post(`/api/auth/verify-otp`, { email, otp, role });
-      
-     
-
-      console.log("OTP Verification Response:", res);
-      const { token, user, userRole } = res;
-      localStorage.setItem("token", token);
-      localStorage.setItem("user", JSON.stringify(user));
-      localStorage.setItem("role", userRole);
-
-      return res;
-    } catch (err) {
-      return rejectWithValue(err.response?.data || "Invalid OTP");
     }
   }
 );
@@ -117,7 +99,11 @@ const authSlice = createSlice({
       })
       .addCase(loginUser.fulfilled, (state, action) => {
         state.loading = false;
-        state.message = action.payload.message; // OTP sent message
+        state.isAuthenticated = true;
+        state.token = action.payload.token;
+        state.user = action.payload.user;
+        state.role = action.payload.role;
+        state.message = "Login successful!";
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.loading = false;
@@ -135,24 +121,6 @@ const authSlice = createSlice({
         state.isAuthenticated = false;
       })
       .addCase(registerUser.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload;
-      })
-
-      // ✅ Verify OTP
-
-      .addCase(verifyOtp.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(verifyOtp.fulfilled, (state, action) => {
-        state.loading = false;
-        state.isAuthenticated = true;
-        state.token = action.payload.token;
-        state.user = action.payload.user;
-        state.role = action.payload.userRole;
-      })
-      .addCase(verifyOtp.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });

@@ -2,33 +2,23 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  AlertCircle,
-  Loader,
   GraduationCap,
   User,
   LogIn,
-  ShieldCheck,
+  Loader,
+  Copy,
 } from "lucide-react";
-import axios from "axios";
-import { loginUser, verifyOtp } from "../../features/auth/AuthSlice"; // make sure verifyOtp exists
-
-const API_BASE_URL = "http://localhost:8080/auth";
+import { loginUser } from "../../features/auth/AuthSlice";
 
 const Login = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("user@gmail.com");
+  const [password, setPassword] = useState("user@123");
   const [role, setRole] = useState("TEACHER");
-  const [otp, setOtp] = useState("");
-  const [step, setStep] = useState(1);
   const [errors, setErrors] = useState({});
   const [message, setMessage] = useState("");
-  const [localLoading, setLocalLoading] = useState(false); // renamed to avoid conflict
+  const [localLoading, setLocalLoading] = useState(false);
 
-  const {
-    loading: reduxLoading,
-    error,
-    isAuthenticated,
-  } = useSelector((state) => state.auth);
+  const { isAuthenticated } = useSelector((state) => state.auth);
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -47,46 +37,25 @@ const Login = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  // Step 1: Send login request → backend sends OTP
   const handleLogin = async (e) => {
     e.preventDefault();
     if (!validate()) return;
 
-    setStep(1); // optional, ensures step is login
     setLocalLoading(true);
+    setMessage("");
 
     const result = await dispatch(loginUser({ email, password, role }));
-    
+    console.log("Login result:", result);
     if (result.meta.requestStatus === "fulfilled") {
-      setMessage("OTP sent! Check your email (check spam folder).");
-      setStep(2); // move to OTP step
-    } else {
+      navigate("/dashboard");
+    } {
       setMessage(result.payload || "Login failed");
     }
 
     setLocalLoading(false);
   };
 
-  const handleVerifyOtp = async (e) => {
-    e.preventDefault();
-    if (!otp) return setMessage("Please enter OTP");
-
-    setLocalLoading(true);
-
-
-    const result = await dispatch(verifyOtp({ email, otp, role }));
-   
-    if (result.meta.requestStatus === "fulfilled") {
-      navigate("/dashboard"); // OTP verified → dashboard
-    } else {
-      setMessage(result.payload || "OTP verification failed");
-    }
-
-    setLocalLoading(false);
-  };
-
   useEffect(() => {
-    console.log("isAuthenticated changed:", isAuthenticated);
     if (isAuthenticated) {
       navigate("/dashboard");
     }
@@ -122,12 +91,10 @@ const Login = () => {
               <button
                 key={option.value}
                 onClick={() => setRole(option.value)}
-                disabled={step === 2}
-                className={`flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
-                  role === option.value
+                className={`flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${role === option.value
                     ? `${option.activeClass} shadow-md ring-2 ring-offset-1`
                     : "bg-slate-100 text-slate-700 hover:bg-slate-200 hover:text-slate-900"
-                }`}
+                  }`}
               >
                 <Icon className="w-4 h-4" />
                 {option.label}
@@ -135,83 +102,58 @@ const Login = () => {
             );
           })}
         </div>
-
-        {/* Step 1: Login Form */}
-        {step === 1 && (
-          <form onSubmit={handleLogin} className="space-y-5">
-            <div>
-              <input
-                type="email"
-                placeholder="Email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className={`w-full px-4 py-3 border rounded-lg bg-slate-50 focus:outline-none focus:ring-2 focus:ring-purple-500 ${
-                  errors.email ? "border-red-500" : "border-slate-300"
+        <div className="mt-6 text-center text-sm text-slate-500 border border-slate-100 rounded-xl p-3 bg-slate-50">
+          <p>For testing purpose use given credentials:</p>
+          <p
+            onClick={() => navigator.clipboard.writeText("user@gmail.com")}
+            title="Copy Email" className="text-xs text-slate-500 flex items-center justify-center gap-4"><span>Email: user@gmail.com</span> <span className="cursor-pointer"><Copy width={10} height={10} /></span></p>
+          <p
+            onClick={() => navigator.clipboard.writeText("user@123")}
+            title="Copy Password" className="text-xs text-slate-500 flex items-center justify-center gap-4"><span>Password: 12345</span> <span className="cursor-pointer"><Copy width={10} height={10} /></span></p>
+        </div>
+        {/* Login Form */}
+        <form onSubmit={handleLogin} className="space-y-5 mt-4">
+          <div>
+            <input
+              type="email"
+              placeholder="Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className={`w-full px-4 py-3 border rounded-lg bg-slate-50 focus:outline-none focus:ring-2 focus:ring-purple-500 ${errors.email ? "border-red-500" : "border-slate-300"
                 }`}
-              />
-              {errors.email && (
-                <p className="text-red-500 text-xs mt-1">{errors.email}</p>
-              )}
-            </div>
+            />
+            {errors.email && (
+              <p className="text-red-500 text-xs mt-1">{errors.email}</p>
+            )}
+          </div>
 
-            <div>
-              <input
-                type="password"
-                placeholder="Password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className={`w-full px-4 py-3 border rounded-lg bg-slate-50 focus:outline-none focus:ring-2 focus:ring-purple-500 ${
-                  errors.password ? "border-red-500" : "border-slate-300"
+          <div>
+            <input
+              type="password"
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className={`w-full px-4 py-3 border rounded-lg bg-slate-50 focus:outline-none focus:ring-2 focus:ring-purple-500 ${errors.password ? "border-red-500" : "border-slate-300"
                 }`}
-              />
-              {errors.password && (
-                <p className="text-red-500 text-xs mt-1">{errors.password}</p>
-              )}
-            </div>
+            />
+            {errors.password && (
+              <p className="text-red-500 text-xs mt-1">{errors.password}</p>
+            )}
+          </div>
 
-            <button
-              type="submit"
-              disabled={localLoading}
-              className="w-full flex items-center justify-center gap-2 py-3 px-4 bg-gradient-to-r from-purple-500 to-indigo-600 text-white font-semibold rounded-lg hover:from-purple-600 hover:to-indigo-700 transition-all disabled:opacity-50"
-            >
-              {localLoading ? (
-                <Loader className="w-5 h-5 animate-spin" />
-              ) : (
-                <LogIn className="w-5 h-5" />
-              )}
-              {localLoading ? "Sending OTP..." : "Login & Send OTP"}
-            </button>
-          </form>
-        )}
-
-        {/* Step 2: OTP Verification */}
-        {step === 2 && (
-          <form onSubmit={handleVerifyOtp} className="space-y-5">
-            <div>
-              <input
-                type="text"
-                placeholder="Enter OTP"
-                value={otp}
-                onChange={(e) => setOtp(e.target.value)}
-                className="w-full px-4 py-3 border rounded-lg bg-slate-50 focus:outline-none focus:ring-2 focus:ring-green-500"
-                required
-              />
-            </div>
-
-            <button
-              type="submit"
-              disabled={localLoading}
-              className="w-full flex items-center justify-center gap-2 py-3 px-4 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition-all disabled:opacity-50"
-            >
-              {localLoading ? (
-                <Loader className="w-5 h-5 animate-spin" />
-              ) : (
-                <ShieldCheck className="w-5 h-5" />
-              )}
-              {localLoading ? "Verifying..." : "Verify OTP"}
-            </button>
-          </form>
-        )}
+          <button
+            type="submit"
+            disabled={localLoading}
+            className="w-full flex items-center justify-center gap-2 py-3 px-4 bg-gradient-to-r from-purple-500 to-indigo-600 text-white font-semibold rounded-lg hover:from-purple-600 hover:to-indigo-700 transition-all disabled:opacity-50"
+          >
+            {localLoading ? (
+              <Loader className="w-5 h-5 animate-spin" />
+            ) : (
+              <LogIn className="w-5 h-5" />
+            )}
+            {localLoading ? "Logging in..." : "Login"}
+          </button>
+        </form>
 
         {message && (
           <div className="mt-4 p-3 text-center text-sm text-slate-700 bg-slate-100 rounded-lg">

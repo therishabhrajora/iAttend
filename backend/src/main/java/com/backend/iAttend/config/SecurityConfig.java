@@ -53,11 +53,8 @@ public class SecurityConfig {
                                             
                                                 .requestMatchers("/college/**").permitAll()
                                                 .requestMatchers("/logout").permitAll()
-                                                .requestMatchers(
-                                                                "/v3/api-docs/**",
-                                                                "/swagger-ui/**",
-                                                                "/swagger-ui.html")
-                                                .permitAll()
+                                              
+                                                
                                                 .requestMatchers("/dashboard").authenticated()
                                                 .requestMatchers("/student/all").authenticated()
                                                 .requestMatchers("/teacher/all").authenticated()

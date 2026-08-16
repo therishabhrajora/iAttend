@@ -59,8 +59,8 @@ import {
 } from "lucide-react";
 import axios from "axios";
 
-// export const API_BASE_URL = "http://localhost:8080";
-export const API_BASE_URL = "https://iattend-yvjs.onrender.com";
+export const API_BASE_URL = "http://localhost:8080";
+// export const API_BASE_URL = "https://iattend-yvjs.onrender.com";
 
 const token = localStorage.getItem("token");
 
@@ -154,14 +154,13 @@ const api = {
       const response = await axios.post(endpoint, data, {
         headers: { "Content-Type": "application/json" },
       });
-      console.log( "📡 POST Response:", response);
+      console.log("📡 POST Response:", response);
      
       return response;
     }
 
     if (url.includes(`/api/auth/${role}/register`)) {
       const endpoint = `${API_BASE_URL}${url}`;
-      // console.log("📡 POST Request:", endpoint, data);
 
       const response = await axios.post(endpoint, data, {
         headers: { "Content-Type": "application/json" },
@@ -170,15 +169,6 @@ const api = {
       return response.data;
     }
 
-    if (url.includes("/verify-otp")) {
-      const endpoint = `${API_BASE_URL}${url}`;
-     
-      const response = await axios.post(endpoint, data, {
-        headers: { "Content-Type": "application/json" },
-      });
-      // Return full response data (including token, user, role)
-      return response.data;
-    }
     return { data: { ...data, id: Date.now().toString() } };
   },
 
